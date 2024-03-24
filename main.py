@@ -1,5 +1,5 @@
 from datetime import date
-from flask import Flask, abort, render_template, redirect, url_for, flash, session
+from flask import Flask, abort, render_template, redirect, url_for, flash, session, request
 from flask_bootstrap import Bootstrap5
 from flask_ckeditor import CKEditor
 from flask_gravatar import Gravatar
@@ -10,11 +10,16 @@ from sqlalchemy import Integer, String, Text, ForeignKey
 from functools import wraps
 from werkzeug.security import generate_password_hash, check_password_hash
 from forms import RegisterForm, CreatePostForm, LoginForm, CommentForm
+from datetime import datetime
+import smtplib
+import os
 
 
+MY_EMAIL = os.environ.get('MY_EMAIL')
+PASSWORD = os.environ.get('PASSWORD')
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = '8BYkEfBA6O6donzWlSihBXox7C0sKR6b'
+app.config['SECRET_KEY'] = os.environ.get('FLASK_KEY')
 ckeditor = CKEditor(app)
 Bootstrap5(app)
 gravatar = Gravatar(
@@ -41,7 +46,7 @@ def load_user(user_id):
 # CREATE DATABASE
 class Base(DeclarativeBase):
     pass
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///posts.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DB_URI')
 db = SQLAlchemy(model_class=Base)
 db.init_app(app)
 
@@ -242,14 +247,31 @@ def delete_post(post_id):
 
 
 
-@app.route("/about")
+@app.route('/about')
 def about():
-    return render_template("about.html")
+    current_date = datetime.now()
+    return render_template("about.html", year=current_date, logged_in=current_user.is_authenticated)
 
 
-@app.route("/contact")
+@app.route("/contact", methods=["GET", "POST"])
 def contact():
-    return render_template("contact.html")
+    current_date = datetime.now()
+    if request.method == 'GET':
+        return render_template("contact.html", year=current_date, msg_sent=False, logged_in=current_user.is_authenticated)
+    elif request.method == 'POST':
+        name = request.form['name']
+        email = request.form['email']
+        phone = request.form['phone']
+        message = request.form['message']
+        with smtplib.SMTP("smtp.gmail.com") as connection:
+            connection.starttls()
+            connection.login(MY_EMAIL, PASSWORD)
+            connection.sendmail(
+                from_addr=MY_EMAIL,
+                to_addrs=email,
+                msg=f"Subject: New Message from blog \n\nName: {name}\nEmail: {email}\nPhone Number: {phone}\nMessage: {message}"
+            )
+        return render_template("contact.html", year=current_date, msg_sent=True, logged_in=current_user.is_authenticated)
 
 
 if __name__ == "__main__":

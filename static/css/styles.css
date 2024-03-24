@@ -10,8 +10,18 @@
  * Copyright 2011-2022 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
  */
+main{
+    font-family: "Poppins", sans-serif;
+}
 
+main div div div{
+    font-family: "Poppins", sans-serif;
+    font-weight: 100;
+}
 
+article{
+    font-family: "Poppins", sans-serif;
+}
 form{
     font-family: var(--bs-body-font-family);
   font-size: var(--bs-body-font-size);
