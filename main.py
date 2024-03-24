@@ -264,7 +264,6 @@ def contact():
         phone = request.form['phone']
         message = request.form['message']
         with smtplib.SMTP("smtp.gmail.com") as connection:
-            connection.starttls()
             connection.login(MY_EMAIL, PASSWORD)
             connection.sendmail(
                 from_addr=MY_EMAIL,
