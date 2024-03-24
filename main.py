@@ -11,7 +11,7 @@ from functools import wraps
 from werkzeug.security import generate_password_hash, check_password_hash
 from forms import RegisterForm, CreatePostForm, LoginForm, CommentForm
 from datetime import datetime
-import smtplib
+from smtplib import SMTP_SSL as SMTP
 import os
 
 
@@ -263,7 +263,7 @@ def contact():
         email = request.form['email']
         phone = request.form['phone']
         message = request.form['message']
-        with smtplib.SMTP("smtp.gmail.com") as connection:
+        with SMTP("smtp.gmail.com", 465) as connection:
             connection.login(MY_EMAIL, PASSWORD)
             connection.sendmail(
                 from_addr=MY_EMAIL,
