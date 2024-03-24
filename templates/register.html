@@ -21,11 +21,11 @@ include "header.html" %}
 <main class="mb-4">
   <div class="container">
     <div class="row">
-      <div class="col-lg-8 col-md-10 mx-auto">
+      <div class="col-lg-4 col-md-10 mx-auto">
         <!--TODO: render your registration form here-->
 
           {{ form.csrf_token }}
-          {{ render_form(form, novalidate=True, button_map={'submit': 'primary'}) }}
+          {{ render_form(form, novalidate=True, button_map={'submit': 'success'}) }}
       </div>
     </div>
   </div>
