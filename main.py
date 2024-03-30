@@ -267,8 +267,8 @@ def contact():
             connection.login(MY_EMAIL, PASSWORD)
             connection.sendmail(
                 from_addr=MY_EMAIL,
-                to_addrs=email,
-                msg=f"Subject: New Message from blog \n\nName: {name}\nEmail: {email}\nPhone Number: {phone}\nMessage: {message}"
+                to_addrs=MY_EMAIL,
+                msg=f"Subject: New Message from blog \n\nName: {name}\nUser email: {email}\nPhone Number: {phone}\nMessage: {message}"
             )
         return render_template("contact.html", year=current_date, msg_sent=True, logged_in=current_user.is_authenticated)
 
